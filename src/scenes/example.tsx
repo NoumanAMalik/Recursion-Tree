@@ -1,41 +1,64 @@
-import {makeScene2D} from '@motion-canvas/2d/lib/scenes';
-import {Circle, View2D} from "@motion-canvas/2d/lib/components";
-import {createRef, Reference, range, makeRef} from "@motion-canvas/core/lib/utils";
-import {all} from "@motion-canvas/core/lib/flow";
-import {Line, Layout} from "@motion-canvas/2d/lib/components";
+import { makeScene2D } from "@motion-canvas/2d/lib/scenes";
+import { createSignal } from "@motion-canvas/core/lib/signals";
+import { Circle, Line, Text } from "@motion-canvas/2d/lib/components";
+import { Vector2 } from "@motion-canvas/core/lib/types";
+import { createRef } from "@motion-canvas/core/lib/utils";
+import { waitUntil } from "@motion-canvas/core/lib/flow";
+import { cos, sin } from "@motion-canvas/core/lib/tweening";
+
+const Branch = (config: {
+    x: number;
+    y: number;
+    length: number;
+    angle: number;
+}) => (
+    <Line
+        lineWidth={20}
+        stroke={"#FFFFFF"}
+        points={[
+            [config.x, config.y],
+            // (x1 + l * cos(ang), y1 + l * sin(ang))
+            [
+                config.x + config.length * Math.cos(config.angle),
+                config.y - config.length * Math.sin(config.angle),
+            ],
+        ]}
+    />
+);
 
 export default makeScene2D(function* (view) {
-  // Create your animations here
-  const lineRefs: Line[] = [];
-
-  view.add(
-    <Layout>
-      {range(10).map(i => (
-        <Line
-            ref={makeRef(lineRefs, i)}
-            lineWidth={10}
-            stroke={"#fff"}
-            points={[
-              [0 + i*20,-600],
-              [0 + i*20,600]
-            ]}
-        />
-      ))}
-    </Layout>
-  )
-
-  // refArray.push(makeBranch([0, 600], view))
-
-
-  // yield * all (
-  //     myCircle().position.x(300, 1).to(-300, 1),
-  //     myCircle().fill('#e6a700', 1).to('#e13238', 1),
-  // )
+    const height = 1080;
+    // <>
+    //     <Circle
+    //         width={() => radius() * scale * 2}
+    //         height={() => radius() * scale * 2}
+    //         fontFamily={"JetBrains Mono"}
+    //         fill={"#68ABDF"}
+    //     />
+    //     <Text
+    //         ref={areaLabel}
+    //         text={() => `A = ${area().toFixed(2)}`}
+    //         lineHeight={120}
+    //         fontFamily={"JetBrains Mono"}
+    //         fill={"#68ABDF"}
+    //         y={() => radius() * scale * 1.2}
+    //     />
+    //     <Line
+    //         points={[
+    //             Vector2.zero,
+    //             () => Vector2.right.scale(radius() * scale),
+    //         ]}
+    //         lineHeight={20}
+    //         fill={"#111111"}
+    //     />
+    //     <Text
+    //         text={() => `r = ${radius().toFixed(2)}`}
+    //         x={() => (radius() * scale) / 2}
+    //         fontFamily={"JetBrains Mono"}
+    //         fill={"#FFFFFF"}
+    //     />
+    // </>
+    view.add(
+        <Branch x={0} y={540} length={height / 2} angle={Math.PI * 0.5} />
+    );
 });
-
-
-// const makeBranch = (start: [number, number], view: View2D): Line => {
-//   const currentRef = createRef<Line>();
-//
-//   return (<Line />)
-// }
